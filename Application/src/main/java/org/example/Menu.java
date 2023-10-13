@@ -1,5 +1,6 @@
 package org.example;
 
+import com.example.springweb.Kafka.JsonKafkaConsumer;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
 import org.json.simple.JSONObject;
@@ -13,7 +14,6 @@ public class Menu {
     private HttpClass http;
     private int input;
     private Scanner scan;
-
     private Properties props;
     private  Consumer<String, String> consumer1;
     private  Consumer<String, String> consumer2;
@@ -29,6 +29,8 @@ public class Menu {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
         this.consumer1 = new KafkaConsumer<>(props);
         this.consumer2 = new KafkaConsumer<>(props);
+
+
 
         run();
     }
@@ -51,24 +53,34 @@ public class Menu {
 
             switch (input) {
                 case 1:
-                    consumer2.assign(Collections.singletonList(new TopicPartition("jsondemo", 0)));
-                    consumer2.seekToEnd(consumer2.assignment());
-
-                    System.out.println("Send post");
+                  //  consumer2.assign(Collections.singletonList(new TopicPartition("jsondemo", 0)));
+                    //consumer2.seekToEnd(consumer2.assignment());
                     // send post
                     JSONObject jsonObject = new JSONObject();
-                    //jsonObject.put("id", "5");
-                    jsonObject.put("firstName", "Kerim");
-                    jsonObject.put("lastName", "Kerimov");
-                    jsonObject.put("number", "123456789");
+                    jsonObject.put("id", null);
+
+                    System.out.println("Enter first name: ");
+                    String firstName = scan.nextLine();
+                    jsonObject.put("firstName", firstName);
+
+                    System.out.println("Enter last name: ");
+                    String lastName = scan.nextLine();
+                    jsonObject.put("lastName", lastName);
+
+                    System.out.println("Enter phone number: ");
+                    Long phoneNumber = scan.nextLong();
+                    jsonObject.put("phoneNumber", phoneNumber);
                     http.sendPost(jsonObject);
 
+                    System.out.println("Your User has been added!");
+
                     // Now consumer is at the end of the partition
-                    ConsumerRecords<String, String> recordss = consumer2.poll(Duration.ofMillis(100));
+                  /*  ConsumerRecords<String, String> recordss = consumer2.poll(Duration.ofMillis(100));
                     for (ConsumerRecord<String, String> record : recordss) {
                         System.out.println("Last message: " + record.value());
                     }
 
+                   */
 
                     //consumer2.close();
 
@@ -77,17 +89,17 @@ public class Menu {
 
                 case 2:
                     // Send Payload to WebAPI and recieve it -> request
-                    System.out.println("Recive all posts from your local kafka server - jsondemo topic");
+                    System.out.println("Recive all posts from your local kafka server - TestJson topic");
 
-                   consumer1.assign(Collections.singletonList(new TopicPartition("jsondemo", 0)));
-                   consumer1.seekToBeginning(consumer1.assignment());
+                    consumer1.assign(Collections.singletonList(new TopicPartition("TestJson", 0))); // Assigns the consumer to a specific partition
+                    consumer1.seekToBeginning(consumer1.assignment()); // Sets the consumer to the beginning of the partition
 
                    boolean printTopic = true;
 
                    while (printTopic) {
                        ConsumerRecords<String, String> records = consumer1.poll(Duration.ofMillis(100)); // Sets the time to wait for data if there is no data in the buffer
                        if(!records.isEmpty()){
-                           for (ConsumerRecord<String, String> record : records){
+                           for (ConsumerRecord<String, String> record : records){ // Prints all the records in the topic
                                System.out.println(record.value());
                            }
                             printTopic = false;
@@ -99,28 +111,13 @@ public class Menu {
 
 
                 case 3:
-                    System.out.println("Print all local kafka topics");
-                    http.getLocalKafka("http://localhost:8080/dynamicapp/listAllKafkaTopics");
+
                     break;
+
+
                 case 4:
-                    /*  System.out.println("Print all Users from DB");
-                      http.countUsers("http://localhost:8080/dynamicapp/listAllUsersFromDB");
-                    DbList dbList = new DbList();
-                    dbList.printAllUsers();
-
-
-                    System.out.println("Print all Users from DB");
-                    CompletableFuture<DbList> futureDbList = http.getLocalDB("http://localhost:8080/dynamicapp/listAllUsersFromDB");
-
-                    // Handle the future result asynchronously
-                    futureDbList.thenAccept(dbList -> {
-                        if (dbList != null) {
-                            dbList.printAllUsers();
-                        } else {
-                            System.out.println("Failed to fetch user data.");
-                        }
-                    }).join(); // Wait for the CompletableFuture to complete
-                    */
+                     System.out.println("Print all Users from DB");
+                     http.countUsers("http://localhost:8080/kafka/ListUsers");
 
 
 

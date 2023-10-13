@@ -28,10 +28,10 @@ public class HttpClass {
     private JSONObject jsonObject;
 
     public HttpClass() throws MalformedURLException {
-        this.url = new URL("http://localhost:8080/dynamicapp/publishJson");
+        this.url = new URL("http://localhost:8080/kafka/publish");
     }
 
-    public void sendPost(JSONObject jsonObject) {
+    public void sendPost(JSONObject jsonObject) { // FUNKAR, BEHÖVER LÄGGA TILL KOD FÖR ATT SE ANTAL USERS -> LÄGGA IN DE PÅ ID
         this.jsonObject = jsonObject;
 
         /*    HTTP CLIENT       */

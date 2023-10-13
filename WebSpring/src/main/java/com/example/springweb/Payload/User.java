@@ -8,7 +8,7 @@ public class User {
 
     @Id
     @GeneratedValue (generator = "users_gen", strategy = GenerationType.IDENTITY)
-    @SequenceGenerator(name = "users_gen", sequenceName = "users_seq", initialValue = 50, allocationSize = 1)
+    @SequenceGenerator(name = "users_gen", sequenceName = "users_seq", initialValue = 1, allocationSize = 1)
     private Long id;
     private String firstName;
     private String lastName;

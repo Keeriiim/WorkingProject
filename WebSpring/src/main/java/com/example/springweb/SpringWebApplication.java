@@ -12,16 +12,9 @@ import java.net.MalformedURLException;
 @SpringBootApplication
 public class SpringWebApplication {
 
-    @Autowired
-    private static UserRepository userRepository;
 
     public static void main(String[] args) throws MalformedURLException, InstantiationException, IllegalAccessException {
         SpringApplication.run(SpringWebApplication.class, args);
-
-
-
-
-
 
 
 
