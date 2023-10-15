@@ -1,9 +1,5 @@
 package com.example.springweb;
 
-import com.example.springweb.Payload.Menu;
-import com.example.springweb.Payload.User;
-import com.example.springweb.Repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

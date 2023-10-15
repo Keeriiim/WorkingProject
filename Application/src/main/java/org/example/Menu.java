@@ -1,10 +1,13 @@
 package org.example;
 
 import com.example.springweb.Kafka.JsonKafkaConsumer;
+import com.example.springweb.Payload.User;
+import com.example.springweb.Repository.UserRepository;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
 import org.json.simple.JSONObject;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.time.Duration;
 import java.util.*;
@@ -14,11 +17,16 @@ public class Menu {
     private HttpClass http;
     private int input;
     private Scanner scan;
+
     private Properties props;
+
+    private UserRepository userRepository;
+
+    private List<User> users;
     private  Consumer<String, String> consumer1;
     private  Consumer<String, String> consumer2;
 
-    public Menu() throws MalformedURLException {
+    public Menu() throws IOException, InterruptedException {
         this.http = new HttpClass();
         this.scan = new Scanner(System.in);
 
@@ -35,13 +43,14 @@ public class Menu {
         run();
     }
 
-    public void run() throws MalformedURLException {
+    public void run() throws IOException, InterruptedException {
         boolean running = true;
 
         while (running) {
 
             System.out.println("\nWelcome to the menu!");
             System.out.println("1. Add user to local kafka & DB");
+            System.out.println("2. Find user from DB");
             System.out.println("2. Recieve all posts from local kafka server - jsondemo topic");
             System.out.println("3. Print all Local kafka Topics");
             System.out.println("4. Print all Users from DB");
@@ -70,7 +79,7 @@ public class Menu {
                     System.out.println("Enter phone number: ");
                     Long phoneNumber = scan.nextLong();
                     jsonObject.put("phoneNumber", phoneNumber);
-                    http.sendPost(jsonObject);
+                    http.sendPostAddUser(jsonObject);
 
                     System.out.println("Your User has been added!");
 
@@ -88,6 +97,12 @@ public class Menu {
                     break;
 
                 case 2:
+                    System.out.println("Enter id: ");
+                    String input = scan.next();
+                    String url = "http://localhost:8080/kafka/ListUser/" + input;
+
+                    http.getUser(url);
+                    /*
                     // Send Payload to WebAPI and recieve it -> request
                     System.out.println("Recive all posts from your local kafka server - TestJson topic");
 
@@ -105,6 +120,8 @@ public class Menu {
                             printTopic = false;
                        }
                    }
+
+                     */
                     break;
 
 

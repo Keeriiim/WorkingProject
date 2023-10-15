@@ -1,6 +1,7 @@
 package org.example;
 
 
+import com.example.springweb.Payload.User;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
@@ -27,12 +28,14 @@ public class HttpClass {
     private URL url;
     private JSONObject jsonObject;
 
-    public HttpClass() throws MalformedURLException {
-        this.url = new URL("http://localhost:8080/kafka/publish");
+
+    public HttpClass() {
+
     }
 
-    public void sendPost(JSONObject jsonObject) { // FUNKAR, BEHÖVER LÄGGA TILL KOD FÖR ATT SE ANTAL USERS -> LÄGGA IN DE PÅ ID
+    public void sendPostAddUser(JSONObject jsonObject) throws MalformedURLException { // FUNKAR, BEHÖVER LÄGGA TILL KOD FÖR ATT SE ANTAL USERS -> LÄGGA IN DE PÅ ID
         this.jsonObject = jsonObject;
+        this.url = new URL("http://localhost:8080/kafka/publish");
 
         /*    HTTP CLIENT       */
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -58,6 +61,20 @@ public class HttpClass {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void getUser(String httpGET) throws IOException, InterruptedException { // Gets the user from the DB based on the requested id
+
+        /*    HTTP CLIENT    */
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(httpGET))
+                .GET()
+                .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+
     }
 
     public void getLocalKafka(String httpGET) throws MalformedURLException {

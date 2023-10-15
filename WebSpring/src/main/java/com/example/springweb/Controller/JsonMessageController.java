@@ -1,5 +1,7 @@
 package com.example.springweb.Controller;
 
+import com.example.springweb.ErrorHandler.ErrorResponse;
+import com.example.springweb.ErrorHandler.UserNotFound;
 import com.example.springweb.Kafka.JsonKafkaProducer;
 import com.example.springweb.Payload.User;
 import com.example.springweb.Repository.UserRepository;
@@ -7,6 +9,8 @@ import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ListTopicsOptions;
 import org.apache.kafka.clients.admin.ListTopicsResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaAdmin;
@@ -49,10 +53,42 @@ public class JsonMessageController {
 
     @GetMapping("/ListUser/{id}") // http://localhost:8080/kafka/ListUser/1
     public ResponseEntity<String> ListUser(@PathVariable Long id) {
-        User user = userRepository.findById(id).orElseThrow();
-        System.out.println(user.toString());
-        return ResponseEntity.ok("Listed user with id: " + id);
+
+        if(id >= userRepository.count() || id <= 0){ // If the id is out of bounds, throw my custom exception
+            throw new UserNotFound("User with id: " + id + " not found");
+        }
+        else{ // If the id is within bounds, return the user
+                User user = userRepository.findById(id).orElseThrow();
+                System.out.println(user.toString());
+                return ResponseEntity.ok(user.toString());
+            }
+        }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleException(UserNotFound exc){ // Sends a response string to the webbrowser if the user is not found & helps avoid spring to crash
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        errorResponse.setMessage(exc.getMessage());
+        errorResponse.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception exc){ // Unlike the previous handler, this one Catches all other exceptions and sends a response string to the webbrowser
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setMessage(exc.getMessage());
+        errorResponse.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+    }
+
+
+
+
+
+
 
     @GetMapping("/CountUsers") // http://localhost:8080/kafka/CountUsers
     public ResponseEntity<String> CountUsers() {
