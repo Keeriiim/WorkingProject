@@ -38,7 +38,8 @@ för att skriva över informationen om alla users vid mitt API anrop på @Getmap
 informationen förs över från spring till min maven modul. 
 
 Jag är väldigt nöjd med min error handler, inte nog med att jag med en simpel kod kan hantera alla errors som kommer till min spring boot. Jag slapp även skriva en massa kod i min client modul och kunde nu istälelt bara
-printa response.body()för att få ut informationen. Fungerade allt fick jag infon jag ville ha, blev det en error kom infon från error handlern istället.
+printa response.body()för att få ut informationen. Fungerade allt fick jag infon jag ville ha, blev det en error kom infon från error handlern istället. Det jag dock valde att göra i mina metoder i HTTP classen var att
+lägga in en try catch då jag tycker det är en extra säkerthet "ifall att" samt så slipper jag skriva throws ... i mina metoder.
 
 ### Lärdomar & möjligheter
 Jag har fått insikt i hur man arbetar med Apache Kafka & Spring boot som jag hoppas att jag kommer kunna nytta framöver.

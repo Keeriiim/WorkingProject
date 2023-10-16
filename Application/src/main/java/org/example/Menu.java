@@ -50,58 +50,51 @@ public class Menu {
 
             System.out.println("\nWelcome to the menu!");
             System.out.println("1. Add user to local kafka & DB");
-            System.out.println("2. Find user from DB");
-            System.out.println("2. Recieve all posts from local kafka server - jsondemo topic");
-            System.out.println("3. Print all Local kafka Topics");
+            System.out.println("2. Count all users from db");
+            System.out.println("3. Print a user from DB");
             System.out.println("4. Print all Users from DB");
-            System.out.println("5. Count all users from db");
-            System.out.println(". Exit");
+            System.out.println("5. Update user from DB");
+            System.out.println("6. Delete user from DB");
+            System.out.println("7. Delete all users from DB");
+            System.out.println("Anything else -> Exit");
 
             this.input = scan.nextInt();
 
-
             switch (input) {
                 case 1:
-                  //  consumer2.assign(Collections.singletonList(new TopicPartition("jsondemo", 0)));
-                    //consumer2.seekToEnd(consumer2.assignment());
-                    // send post
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("id", null);
+                    jsonObject.put("id", 0);
 
                     System.out.println("Enter first name: ");
-                    String firstName = scan.nextLine();
+                    String firstName = scan.next();
                     jsonObject.put("firstName", firstName);
 
                     System.out.println("Enter last name: ");
-                    String lastName = scan.nextLine();
+                    String lastName = scan.next();
                     jsonObject.put("lastName", lastName);
 
                     System.out.println("Enter phone number: ");
-                    Long phoneNumber = scan.nextLong();
-                    jsonObject.put("phoneNumber", phoneNumber);
-                    http.sendPostAddUser(jsonObject);
-
-                    System.out.println("Your User has been added!");
-
-                    // Now consumer is at the end of the partition
-                  /*  ConsumerRecords<String, String> recordss = consumer2.poll(Duration.ofMillis(100));
-                    for (ConsumerRecord<String, String> record : recordss) {
-                        System.out.println("Last message: " + record.value());
+                    while (!scan.hasNextLong()) { // Checks if the input is a number
+                        System.out.println("Invalid input, please enter a number for phone number: ");
+                        scan.next(); // Clear invalid input
                     }
+                        Long phoneNumber = scan.nextLong();
+                        jsonObject.put("phoneNumber", phoneNumber);
+                        http.sendPostAddUser(jsonObject);
 
-                   */
 
-                    //consumer2.close();
+                        System.out.println("Your User has been added!");
 
 
                     break;
 
                 case 2:
-                    System.out.println("Enter id: ");
-                    String input = scan.next();
-                    String url = "http://localhost:8080/kafka/ListUser/" + input;
+                    System.out.println("Count all users from db");
+                    http.countUsers("http://localhost:8080/kafka/CountUsers");
+                    break;
 
-                    http.getUser(url);
+
+
                     /*
                     // Send Payload to WebAPI and recieve it -> request
                     System.out.println("Recive all posts from your local kafka server - TestJson topic");
@@ -122,37 +115,38 @@ public class Menu {
                    }
 
                      */
-                    break;
-
-
-
 
                 case 3:
-
+                    System.out.println("Enter id: ");
+                    String input = scan.next();
+                    http.getUser("http://localhost:8080/kafka/ListUser/" + input);
                     break;
 
 
                 case 4:
-                     System.out.println("Print all Users from DB");
-                     http.countUsers("http://localhost:8080/kafka/ListUsers");
-
-
-
+                    System.out.println("Print all Users from DB");
+                    http.ListUsers("http://localhost:8080/kafka/ListUsers");
                     break;
 
-                    case 5:
-                    System.out.println("Count all users from db");
-                    http.countUsers("http://localhost:8080/dynamicapp/CountAllUsersFromDB");
+                case 5:
+                    System.out.println("Update an user from DB");
+                    http://localhost:8080/kafka/DeleteUser/1
                     break;
+
+                case 6:
+                    http.deleteUser();
+                    break;
+
+                case 7:
+                    System.out.println("Delete user from DB");
+                    http://localhost:8080/kafka/DeleteUser/1
+                    break;
+
                 default:
                     System.out.println("Exit");
                     running = false;
                     break;
             }
-
-
-
-            // recieve post
         }
     }
 

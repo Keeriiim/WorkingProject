@@ -15,6 +15,7 @@
     <description>FinalProject</description>
     <modules>
         <module>Application</module>
+        <module>WebSpring</module>
     </modules>
     <packaging>pom</packaging>
 

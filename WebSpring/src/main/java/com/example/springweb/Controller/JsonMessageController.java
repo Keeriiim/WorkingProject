@@ -36,34 +36,9 @@ public class JsonMessageController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/publish") // http://localhost:8080/kafka/publish
-    public ResponseEntity<String> publish(@RequestBody User user) {
-        kafkaProducer.sendMessage(user);
-        return ResponseEntity.ok("Added user: " + user.toString() + " to kafka");
-    }
 
-    @GetMapping("/ListUsers") // http://localhost:8080/kafka/ListUsers
-    public ResponseEntity<String> ListUsers() {
-        Iterable<User> users = userRepository.findAll();
-        for (User user : users) {
-            System.out.println(user.toString());
-        }
-        return ResponseEntity.ok(users.toString());
-    }
 
-    @GetMapping("/ListUser/{id}") // http://localhost:8080/kafka/ListUser/1
-    public ResponseEntity<String> ListUser(@PathVariable Long id) {
-
-        if(id >= userRepository.count() || id <= 0){ // If the id is out of bounds, throw my custom exception
-            throw new UserNotFound("User with id: " + id + " not found");
-        }
-        else{ // If the id is within bounds, return the user
-                User user = userRepository.findById(id).orElseThrow();
-                System.out.println(user.toString());
-                return ResponseEntity.ok(user.toString());
-            }
-        }
-
+    // Error Handlers
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(UserNotFound exc){ // Sends a response string to the webbrowser if the user is not found & helps avoid spring to crash
         ErrorResponse errorResponse = new ErrorResponse();
@@ -85,30 +60,49 @@ public class JsonMessageController {
     }
 
 
+    // Post Requests
+    @PostMapping("/publish") // http://localhost:8080/kafka/publish
+    public ResponseEntity<String> publish(@RequestBody User user) {
+        try{
+            kafkaProducer.sendMessage(user);
+            return ResponseEntity.ok("Added user: " + user.toString() + " to kafka & DB");
+        }catch (Exception e){
+            throw e; // Throws the exception to the error handler handleGenericException
+        }
+    }
 
 
-
-
-
+    // Get Requests
     @GetMapping("/CountUsers") // http://localhost:8080/kafka/CountUsers
     public ResponseEntity<String> CountUsers() {
         long count = userRepository.count();
         System.out.println("Number of users in the DB: " + count);
-        return ResponseEntity.ok("Number of users: " + count);
+        return ResponseEntity.ok(String.valueOf(count));
     }
 
-    @GetMapping("/DeleteUser/{id}") // http://localhost:8080/kafka/DeleteUser/1
-    public ResponseEntity<String> DeleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id);
-        return ResponseEntity.ok("Deleted user with id: " + id);
+    @GetMapping("/ListUsers") // http://localhost:8080/kafka/ListUsers
+    public ResponseEntity<String> ListUsers() {
+        Iterable<User> users = userRepository.findAll();
+        for (User user : users) {
+            System.out.println(user.toString());
+        }
+        return ResponseEntity.ok(users.toString());
     }
 
-    @GetMapping("/DeleteAllUsers") // http://localhost:8080/kafka/DeleteAllUsers
-    public ResponseEntity<String> DeleteAllUsers() {
-        userRepository.deleteAll();
-        return ResponseEntity.ok("Deleted all users");
+    @GetMapping("/ListUser/{id}") // http://localhost:8080/kafka/ListUser/1
+    public ResponseEntity<String> ListUser(@PathVariable Long id) {
+
+        if(id > userRepository.count() || id <= 0){ // If the id is out of bounds, throw my custom exception
+            throw new UserNotFound("User with id: " + id + " not found");
+        }
+        else{ // If the id is within bounds, return the user
+                User user = userRepository.findById(id).orElseThrow();
+                System.out.println(user.toString());
+                return ResponseEntity.ok(user.toString());
+            }
     }
 
+    // PUT Requests
     @PostMapping("UpdateUser/{id}")
     // http://localhost:8080/kafka/UpdateUser/1  Vill du verkligen söka på id och ändra om hela den? ,
     public ResponseEntity<String> UpdateUser(@PathVariable Long id, @RequestBody User user) {
@@ -119,6 +113,27 @@ public class JsonMessageController {
         userRepository.save(user1);
         return ResponseEntity.ok("Updated user with id: " + id);
     }
+
+
+    // Delete Requests
+    @DeleteMapping("/DeleteUser/{id}") // http://localhost:8080/kafka/DeleteUser/1
+    public ResponseEntity<String> DeleteUser(@PathVariable Long id) {
+        if(id > userRepository.count() || id <= 0){ // If the id is out of bounds, throw my custom exception
+            throw new UserNotFound("User with id: " + id + " not found");
+        }
+        else{ // If the id is within bounds, return the user
+            userRepository.deleteById(id);
+            return ResponseEntity.ok("Deleted user with id: " + id);
+        }
+    }
+
+    @GetMapping("/DeleteAllUsers") // http://localhost:8080/kafka/DeleteAllUsers
+    public ResponseEntity<String> DeleteAllUsers() {
+        userRepository.deleteAll();
+        return ResponseEntity.ok("Deleted all users");
+    }
+
+
 
 
 
