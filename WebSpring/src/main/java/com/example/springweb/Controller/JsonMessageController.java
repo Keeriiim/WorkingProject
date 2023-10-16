@@ -103,7 +103,7 @@ public class JsonMessageController {
     }
 
     // PUT Requests
-    @PostMapping("UpdateUser/{id}")
+    @PutMapping("UpdateUser/{id}")
     // http://localhost:8080/kafka/UpdateUser/1  Vill du verkligen söka på id och ändra om hela den? ,
     public ResponseEntity<String> UpdateUser(@PathVariable Long id, @RequestBody User user) {
         User user1 = userRepository.findById(id).orElseThrow();
@@ -111,6 +111,7 @@ public class JsonMessageController {
         user1.setLastName(user.getLastName());
         user1.setPhoneNumber(user.getPhoneNumber());
         userRepository.save(user1);
+        kafkaProducer.sendMessage(user1);
         return ResponseEntity.ok("Updated user with id: " + id);
     }
 
@@ -127,7 +128,7 @@ public class JsonMessageController {
         }
     }
 
-    @GetMapping("/DeleteAllUsers") // http://localhost:8080/kafka/DeleteAllUsers
+    @DeleteMapping("/DeleteAllUsers") // http://localhost:8080/kafka/DeleteAllUsers
     public ResponseEntity<String> DeleteAllUsers() {
         userRepository.deleteAll();
         return ResponseEntity.ok("Deleted all users");

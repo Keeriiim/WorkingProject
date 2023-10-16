@@ -90,7 +90,8 @@ public class Menu {
 
                 case 2:
                     System.out.println("Count all users from db");
-                    http.countUsers("http://localhost:8080/kafka/CountUsers");
+                    Long a = http.countUsers("http://localhost:8080/kafka/CountUsers");
+                    System.out.println(a);
                     break;
 
 
@@ -130,7 +131,7 @@ public class Menu {
 
                 case 5:
                     System.out.println("Update an user from DB");
-                    http://localhost:8080/kafka/DeleteUser/1
+                    http.updateUser("http://localhost:8080/kafka/UpdateUser/");
                     break;
 
                 case 6:
@@ -138,8 +139,8 @@ public class Menu {
                     break;
 
                 case 7:
-                    System.out.println("Delete user from DB");
-                    http://localhost:8080/kafka/DeleteUser/1
+                    System.out.println("Delete all users from DB");
+                    http.deleteAllUsers();
                     break;
 
                 default:

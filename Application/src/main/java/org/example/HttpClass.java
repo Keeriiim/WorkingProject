@@ -64,7 +64,7 @@ public class HttpClass {
                 System.out.println("Error, " + e.getMessage());
             }
     }
-    public void countUsers(String httpGET) { // Prints the number of users in the DB
+    public Long countUsers(String httpGET) { // Prints the number of users in the DB
         try {
             HttpClient httpClient = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
@@ -79,7 +79,7 @@ public class HttpClass {
            catch (Exception e){
                System.out.println("Error, please check that you are calling the right URL" + e.getMessage());
            }
-
+        return this.count;
     }
     public void getUser(String httpGET){ // Gets the user from the DB based on the requested id
 
@@ -112,6 +112,56 @@ public class HttpClass {
             System.out.println(e.getMessage());
         }
     }
+
+    public void updateUser(String httpPut){
+        String httpPUT = httpPut; // Stores the url to send the put request to
+        countUsers("http://localhost:8080/kafka/CountUsers"); // Gets the number of users in the DB
+        System.out.println("You have " + this.count + " users in the DB, with user 1 being the first");
+
+        System.out.println("Enter the id of the user you want to update: ");
+        Long updateID = scan.nextLong();
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", updateID);
+
+
+        System.out.println("Update first name: ");
+        String firstName = scan.next();
+        jsonObject.put("firstName", firstName);
+
+        System.out.println("Update last name: ");
+        String lastName = scan.next();
+        jsonObject.put("lastName", lastName);
+
+        System.out.println("Update phone number: ");
+        while (!scan.hasNextLong()) { // Checks if the input is a number
+            System.out.println("Invalid input, please enter a number for phone number: ");
+            scan.next(); // Clear invalid input
+        }
+        Long phoneNumber = scan.nextLong();
+        jsonObject.put("phoneNumber", phoneNumber);
+
+        // Har sparat mitt nya json object
+
+        System.out.println("Before: "); getUser("http://localhost:8080/kafka/ListUser/"+updateID);
+
+        try{
+            HttpClient httpClient = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(httpPUT+"1"))
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(jsonObject.toJSONString()))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("After: "); getUser("http://localhost:8080/kafka/ListUser/"+updateID);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());;
+        }
+
+    }
     public void deleteUser(){
         // String httpDelete = httpDELETE;
         countUsers("http://localhost:8080/kafka/CountUsers");
@@ -134,6 +184,31 @@ public class HttpClass {
                     .build();
 
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                System.out.println("User with id " + deleteID + " has been deleted");
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());;
+            }
+        }
+    }
+
+    public void deleteAllUsers(){
+        countUsers("http://localhost:8080/kafka/CountUsers");
+
+        if (this.count == 0){ // Checks if there are any users in the DB
+            System.out.println("No users to delete");
+        }
+        else{
+            System.out.println("You have " + this.count + " users in the DB, all will be deleted");
+            String httpDeleteAll = "http://localhost:8080/kafka/DeleteAllUsers"; // Adds the id to the url
+            try {
+                HttpClient httpClient = HttpClient.newHttpClient(); // Sends a delete request to the DB
+                HttpRequest request = HttpRequest.newBuilder()      // to delete the user with the requested id
+                        .uri(URI.create(httpDeleteAll))
+                        .DELETE()
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
                 System.out.println(response.body());
 
             } catch (Exception e) {
@@ -143,9 +218,7 @@ public class HttpClass {
     }
 
 
-    // Delete all users from DB
 
-    // Update user from DB
 
     // get All Local KAfka topics / messages
 
