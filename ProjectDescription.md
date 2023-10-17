@@ -45,4 +45,4 @@ Copyright (c) 2023 Kerim Kozo
 [MIT License](https://choosealicense.com/licenses/mit/).
 
 ## Contribute
-Feel free to pull and expand on this project.kl
+Feel free to pull and expand on this project. Contributions are always welcome.

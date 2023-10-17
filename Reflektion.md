@@ -4,10 +4,11 @@
 
 ### Projektbeskrivning
 Jag har skapat en applikation där en User kan genom ett API lägga till personer i en lista som både sparas lokalt på kafka servern men också lokalt i en MySQL databas.
-Skriv dokumentation som beskriver ditt Apache Kafka-klusters
-konfiguration och hur producenten och konsumenterna är
-implementerade.
-
+Jag har en producer som skickar informationen till min kafka server samt två konsumers som lyssnar på min kafka server. En av konsumerna skriver ut informationen till min databas i form av en logg,
+den andra sparar informationen i min databas. Min properties fil är konfiguerad för att kunna köra på localhost:9092 för mina konsumenter & producer. Den innehåller även inloggningsuppgifter för att kunna ansluta till min lokala databas samt
+databasen som kommer att användas för projektet. Min hibernate satte jag på update så att den skapar mina scheman men modifierar inte dem. Min logging nivå satte jag på Error då jag försökte minimera alla loggar i spring & spring test
+för att få en bättre överblick. I mitt kafka kluster valde jag att köra på det som var förinställt från min kafka mapp. Jag har inte lagt någon större vikt på att fördela mina partitions för en parallel bearbetning,
+skapat replikor eller att skapa en backup av mina topics. Projektet handlar mer om att få igång ett program som använder en grundläggande CRUD funktionalitet med hjälp av Apache Kafka & Spring boot.
 
 
 ### Vem har gjort vad?

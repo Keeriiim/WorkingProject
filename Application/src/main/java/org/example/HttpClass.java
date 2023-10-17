@@ -8,16 +8,12 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.json.simple.JSONObject;
-
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -37,7 +33,7 @@ public class HttpClass {
         this.scan = new Scanner(System.in);
     }
 
-    public void sendPostAddUser(JSONObject jsonObject)  { // Sends a post request to the DB to add a user
+    public void sendPostAddUser(JSONObject jsonObject)  { // Sends a post request to the DB to add an user
         this.jsonObject = jsonObject;
 
         try{
@@ -113,7 +109,7 @@ public class HttpClass {
         }
     }
 
-    public void updateUser(String httpPut){
+    public void updateUser(String httpPut){ // Updates a user in the DB based on the requested id
         String httpPUT = httpPut; // Stores the url to send the put request to
         countUsers("http://localhost:8080/kafka/CountUsers"); // Gets the number of users in the DB
         System.out.println("You have " + this.count + " users in the DB, with user 1 being the first");
@@ -148,7 +144,7 @@ public class HttpClass {
         try{
             HttpClient httpClient = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(httpPUT+"1"))
+                    .uri(URI.create(httpPUT+updateID)) // Se om den funkar ?????????????
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(jsonObject.toJSONString()))
                     .build();
@@ -162,9 +158,8 @@ public class HttpClass {
         }
 
     }
-    public void deleteUser(){
-        // String httpDelete = httpDELETE;
-        countUsers("http://localhost:8080/kafka/CountUsers");
+    public void deleteUser(){ // Deletes a user from the DB based on the requested id
+        Long before = countUsers("http://localhost:8080/kafka/CountUsers"); // Gets the number of users in the DB
 
         if (this.count == 0){ // Checks if there are any users in the DB
             System.out.println("No users to delete");
@@ -172,9 +167,8 @@ public class HttpClass {
         else{
             System.out.println("You have " + this.count + " users in the DB, with user 1 being the first");
             System.out.println("Enter the id of the user you want to delete: ");
-            String deleteID = scan.next();
+            Long deleteID = scan.nextLong();
             String httpDELETE = "http://localhost:8080/kafka/DeleteUser/" + deleteID; // Adds the id to the url
-            System.out.println(httpDELETE);
 
             try {
                 HttpClient httpClient = HttpClient.newHttpClient(); // Sends a delete request to the DB
@@ -192,7 +186,7 @@ public class HttpClass {
         }
     }
 
-    public void deleteAllUsers(){
+    public void deleteAllUsers(){ // Deletes all users from the DB
         countUsers("http://localhost:8080/kafka/CountUsers");
 
         if (this.count == 0){ // Checks if there are any users in the DB
@@ -216,73 +210,4 @@ public class HttpClass {
             }
         }
     }
-
-
-
-
-    // get All Local KAfka topics / messages
-
-    // integrate to delete kafka messages
-
-
-
-
-
-
-
-
-
-
-
-
-    public void getLocalKafka(String httpGET) throws MalformedURLException {
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(httpGET))
-                .GET()
-                .build();
-        try {
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() == 200) {
-                String responseBody = response.body();
-                // Process the response body as needed
-                System.out.println(responseBody);
-            } else {
-                System.out.println("Request failed with status code: " + response.statusCode());
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace(); // Handle exceptions properly in your actual implementation
-        }
-    }
-
-   /* public CompletableFuture<DbList> getLocalDB(String httpGET) throws MalformedURLException {
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(httpGET))
-                .GET()
-                .build();
-        try {
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.toString());
-
-            if (response.statusCode() == 200) {
-                String responseBody = response.body();
-                // Process the response body as needed
-                System.out.println(responseBody);
-            } else {
-                System.out.println("Request failed with status code: " + response.statusCode());
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace(); // Handle exceptions properly in your actual implementation
-        }
-        return null;
-
-    }*/
-
-
-
-
-
-
 }

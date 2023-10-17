@@ -85,7 +85,6 @@ public class Menu {
 
                         System.out.println("Your User has been added!");
 
-
                     break;
 
                 case 2:
@@ -93,29 +92,6 @@ public class Menu {
                     Long a = http.countUsers("http://localhost:8080/kafka/CountUsers");
                     System.out.println(a);
                     break;
-
-
-
-                    /*
-                    // Send Payload to WebAPI and recieve it -> request
-                    System.out.println("Recive all posts from your local kafka server - TestJson topic");
-
-                    consumer1.assign(Collections.singletonList(new TopicPartition("TestJson", 0))); // Assigns the consumer to a specific partition
-                    consumer1.seekToBeginning(consumer1.assignment()); // Sets the consumer to the beginning of the partition
-
-                   boolean printTopic = true;
-
-                   while (printTopic) {
-                       ConsumerRecords<String, String> records = consumer1.poll(Duration.ofMillis(100)); // Sets the time to wait for data if there is no data in the buffer
-                       if(!records.isEmpty()){
-                           for (ConsumerRecord<String, String> record : records){ // Prints all the records in the topic
-                               System.out.println(record.value());
-                           }
-                            printTopic = false;
-                       }
-                   }
-
-                     */
 
                 case 3:
                     System.out.println("Enter id: ");
