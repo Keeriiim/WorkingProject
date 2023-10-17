@@ -22,28 +22,27 @@ Jag hade väldigt många olika planer under arbetets gång men då jag hade väl
 
 ### Utmaningar & Exempel
 Det var ett flertal utmaningar med detta projekt. Min tankeresa började med att jag ville få usern att browsa till localhost där den fick en flashig frontend där Usern kunde få get requests genom att trycka på
-knappar jag hade skapat, samt nyttja post genom att lägga till användarnamn & lösen. Men jag märkte snabbt att jag hade för lite frontend kunskap för att få allt att funger samt då jag fick det fömredlat att allt skulle ske via terminalen
-så ändrade jag mig istället till att köra med apache clients & lägga den ideen åt sidan. med Till en början var det enkelt att få sätt upp & köra sin kafka Server. Därefter blev det mer komplext när vi involverade
+knappar jag hade skapat, samt nyttja post genom att lägga till användarnamn & lösen. Men jag märkte snabbt att jag hade för lite frontend kunskap för att få allt att fungera samt då jag fick det förmedlat att allt skulle ske via terminalen
+så ändrade jag mig istället till att köra med apache client & lägga den ideen åt sidan. Till en början var det enkelt att få sätt upp & köra sin kafka Server. Därefter blev det mer komplext när vi la till en modul för att använda apache client.
 Tanken med apache clients var att ha en modul som interragerar med användaren där man kan skicka HTTP requests genom en lista av användarvänliga alternativ. Jag hade så mycket problem med att få modulerna till att fungera
-att jag vid sidan om försökte göra ett dubblearbete genom att köra apache clients inom springboot. Arbetet blev väldigt rörigt men som tur var lyckades jag få modulerna att fungera.
-Eloge till Sameer som spenderade halva sin kväll med mig för att få modulerna att fungera!
+att jag vid sidan om försökte göra ett dubblearbete genom att köra apache client inom springboot. Arbetet blev väldigt rörigt men som tur var lyckades jag få modulerna att fungera. Eloge till Sameer som spenderade halva sin kväll med mig för att få modulerna att fungera!
+
+En utmaning jag hade var att uppdatera id:et i databasen vid för en ny post eller delete. Jag listade ut att jag kan manuellt ställa in mitt ID baserat på antal users som redan finns i databasen & addera ett. Dock att uppdatera befintliga ID:n
+vid en delete var en riktigt utmaning. Jag hade flera sätt som jag försökte få den till att fungera effektivt men det slutade med att jag tog en enkel men ineffektiv lösning vilket är att ta bort allt som finns in databasen, därefter
+lägga till alla users som inte togs bort, samt decrementa alla ID:n efter den borttagna usern. En väldigt ineffektiv lösning men den fungerar.
 
 ## Slutsatser
 ### Vad gick bra/dåligt & vad hade du kunnat gjort annorlunda?
-Jag lyckades åstadkomma en fungerande app vilket jag är nöjd med. Dock är den inte som jag hade önskat mig. Jag hade flera ideer som inte kunde möjliggöras, främst på grund utav att
-jag inte hittade lösning på problemet. Jag hade till exempel vid ett moment lyckats skriva ut alla usern från databasen i spring boot men responsen kom tillbaka tom till min andra modul. När jag fick mina moduler till att funka försvann detta problemet vilket är väldigt märkligt.
-
-jag skriva ut alla users från databasen via min spring boot konsoll men när jag försökte få samma print i min maven modul
-kom den tillbaka som tom/null. Jag spenderade en hel kväll med flera olika lösningar men den ville bara inte föra över informationen. Jag skapade till och med en separat klass
-för att skriva över informationen om alla users vid mitt API anrop på @Getmapping printAllUsersFromDB men det fungerade heller inte. Det är något bakomliggande som inte möjliggör att 
-informationen förs över från spring till min maven modul. 
-
-Jag är väldigt nöjd med min error handler, inte nog med att jag med en simpel kod kan hantera alla errors som kommer till min spring boot. Jag slapp även skriva en massa kod i min client modul och kunde nu istälelt bara
-printa response.body()för att få ut informationen. Fungerade allt fick jag infon jag ville ha, blev det en error kom infon från error handlern istället. Det jag dock valde att göra i mina metoder i HTTP classen var att
+Jag lyckades åstadkomma en fungerande app vilket jag är nöjd med. Dock finns där delar där man hade kunnat finputsa och snygga till koden vilket blir ett arbete framöver. Det svåraste för mig i detta projekt var att jag inte fick mina moduler att funka.
+Min upplevelse i detta projekt var ungefär såhär, 10 % faktiskt kodning & 90 % felsökning. 
+Förutom problem med moduler stötte jag på ett par andra problem. T.ex lyckades jag inte vid ett tillfälle skriva ut alla users från databasen via min app modul utan enbart printa den i spring boot.
+Vid en närmare undersökning så kom infon tillbaka som tom/null. Jag spenderade en hel kväll med flera olika lösningar men den ville bara inte föra över informationen. Jag skapade till och med en separat klass
+för att skriva över informationen om alla users när jag gör mitt API anrop men det fungerade heller inte. Jag är dock väldigt nöjd med min error handler, inte nog med att jag med en simpel kod kan hantera alla errors som kommer till min spring boot. Jag slapp även skriva en massa kod i min andra modul och kunde nu iställt bara
+printa response.body()för att få ut informationen. Fungerade allt fick jag infon jag ville ha, blev det en error kom infon från error handlern istället. Det jag dock valde att göra i mina metoder i HTTP klassen var att
 lägga in en try catch då jag tycker det är en extra säkerthet "ifall att" samt så slipper jag skriva throws ... i mina metoder.
 
 ### Lärdomar & möjligheter
-Jag har fått insikt i hur man arbetar med Apache Kafka & Spring boot som jag hoppas att jag kommer kunna nytta framöver.
+Jag har fått insikt i hur man arbetar med Apache Kafka & Spring boot som jag hoppas att jag kommer kunna nyttja framöver.
 Nu är det upp till mig att vidare utforska och skriva mer avancerad kod. Denna kunskap som jag har fått från kursen kommer jag ha nytta av när jag söker framtida tjänster som efterfrågar
 denna kunskap, då vet jag vad rollen innebär och vad jag kan erbjuda. Det största "problemet" som jag dock har märkt under min tid som kodare är att jag inte har problem med min kreativitet
 eller att skriva kod, utan jag fallerar alltid på min begränsade kunskap om hur koden fungerar i bakgrunden. Många gånger får man inte det resultated man förväntade sig, i vissa fall leder
